@@ -73,13 +73,17 @@ data class AnnotationFilter(@JsonProperty("regex") val regex: Regex) : TestFilte
 }
 
 data class AnnotationValueFilter(@JsonProperty("regex") val regex: Regex) : TestFilter {
-    override fun filter(tests: List<Test>): List<Test> = tests.filter { it.metaProperties.any { it.values.any { regex.matches(it.value as? String ?: "") } } }
-    override fun filterNot(tests: List<Test>): List<Test> = tests.filterNot { it.metaProperties.any { it.values.any { regex.matches(it.value as? String ?: "")  } } }
+    override fun filter(tests: List<Test>): List<Test> =
+        tests.filter { it.metaProperties.any { it.values.any { regex.matches(it.value as? String ?: "") } } }
+
+    override fun filterNot(tests: List<Test>): List<Test> =
+        tests.filterNot { it.metaProperties.any { it.values.any { regex.matches(it.value as? String ?: "") } } }
 
     override fun equals(other: Any?): Boolean {
         if (other !is AnnotationValueFilter) return false
         return regex.toString().contentEquals(other.regex.toString())
     }
+
     override fun hashCode(): Int = regex.hashCode()
 
     override fun toString(): String {
@@ -88,13 +92,39 @@ data class AnnotationValueFilter(@JsonProperty("regex") val regex: Regex) : Test
 }
 
 data class AnnotationValueListFilter(@JsonProperty("regex") val regex: Regex) : TestFilter {
-    override fun filter(tests: List<Test>): List<Test> = tests.filter { it.metaPropertiesList.any { it.values.any { it.values.any { regex.matches(it.value as? String ?: "") } } } }
-    override fun filterNot(tests: List<Test>): List<Test> = tests.filterNot { it.metaPropertiesList.any { it.values.any { it.values.any { regex.matches(it.value as? String ?: "") } } } }
+    override fun filter(tests: List<Test>): List<Test> = tests.filter {
+        it.metaPropertiesList.any {
+            it.values.any {
+                it.values.any {
+                    it.values.any {
+                        regex.matches(
+                            it.value as? String ?: ""
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    override fun filterNot(tests: List<Test>): List<Test> = tests.filterNot {
+        it.metaPropertiesList.any {
+            it.values.any {
+                it.values.any {
+                    it.values.any {
+                        regex.matches(
+                            it.value as? String ?: ""
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (other !is AnnotationValueListFilter) return false
         return regex.toString().contentEquals(other.regex.toString())
     }
+
     override fun hashCode(): Int = regex.hashCode()
 
     override fun toString(): String {
