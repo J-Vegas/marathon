@@ -6,7 +6,8 @@ data class Test(
     val pkg: String,
     val clazz: String,
     val method: String,
-    val metaProperties: Collection<MetaProperty>
+    val metaProperties: Collection<MetaProperty> = emptyList(),
+    val metaPropertiesList: Collection<MetaPropertyList> = emptyList()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

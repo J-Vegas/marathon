@@ -87,6 +87,21 @@ data class AnnotationValueFilter(@JsonProperty("regex") val regex: Regex) : Test
     }
 }
 
+data class AnnotationValueListFilter(@JsonProperty("regex") val regex: Regex) : TestFilter {
+    override fun filter(tests: List<Test>): List<Test> = tests.filter { it.metaPropertiesList.any { it.values.any { it.values.any { regex.matches(it.value as? String ?: "") } } } }
+    override fun filterNot(tests: List<Test>): List<Test> = tests.filterNot { it.metaPropertiesList.any { it.values.any { it.values.any { regex.matches(it.value as? String ?: "") } } } }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is AnnotationValueListFilter) return false
+        return regex.toString().contentEquals(other.regex.toString())
+    }
+    override fun hashCode(): Int = regex.hashCode()
+
+    override fun toString(): String {
+        return "AnnotationValueListFilter(regex=$regex)"
+    }
+}
+
 data class TestMethodFilter(@JsonProperty("regex") val regex: Regex) : TestFilter {
     override fun filter(tests: List<Test>): List<Test> = tests.filter { regex.matches(it.method) }
     override fun filterNot(tests: List<Test>): List<Test> = tests.filterNot { regex.matches(it.method) }

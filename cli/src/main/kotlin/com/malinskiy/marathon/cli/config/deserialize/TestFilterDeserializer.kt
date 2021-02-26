@@ -10,6 +10,7 @@ import com.fasterxml.jackson.module.kotlin.treeToValue
 import com.malinskiy.marathon.exceptions.ConfigurationException
 import com.malinskiy.marathon.execution.AnnotationFilter
 import com.malinskiy.marathon.execution.AnnotationValueFilter
+import com.malinskiy.marathon.execution.AnnotationValueListFilter
 import com.malinskiy.marathon.execution.CompositionFilter
 import com.malinskiy.marathon.execution.FullyQualifiedClassnameFilter
 import com.malinskiy.marathon.execution.SimpleClassnameFilter
@@ -43,6 +44,10 @@ class TestFilterDeserializer : StdDeserializer<TestFilter>(TestFilter::class.jav
             "annotation-value" -> {
                 (node as ObjectNode).remove("type")
                 codec.treeToValue<AnnotationValueFilter>(node)
+            }
+            "annotation-value-list" -> {
+                (node as ObjectNode).remove("type")
+                codec.treeToValue<AnnotationValueListFilter>(node)
             }
             "method" -> {
                 (node as ObjectNode).remove("type")
