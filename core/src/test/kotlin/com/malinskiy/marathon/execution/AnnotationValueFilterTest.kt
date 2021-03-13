@@ -7,12 +7,6 @@ import com.malinskiy.marathon.test.Test as MarathonTest
 
 class AnnotationValueFilterTest {
 
-    class MetaPropertyValue(val name: String, val value: String)
-
-    private val mPv1 = MetaPropertyValue("Annotation", "12345")
-    private val mPv2 = MetaPropertyValue("Annotation", "54321")
-    private val mPv3 = MetaPropertyValue("Annotation", "45123")
-
     private val annotation1 = MetaProperty("AnnotationOne", mapOf("Annotation" to "12345"))
     private val annotation2 = MetaProperty("AnnotationOne", mapOf("Annotation" to "54321"))
     private val annotation3 = MetaProperty("AnnotationOne", mapOf("Annotation" to "45123", "Annotation" to "12345"))

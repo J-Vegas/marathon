@@ -93,31 +93,11 @@ data class AnnotationValueFilter(@JsonProperty("regex") val regex: Regex) : Test
 
 data class AnnotationValueListFilter(@JsonProperty("regex") val regex: Regex) : TestFilter {
     override fun filter(tests: List<Test>): List<Test> = tests.filter {
-        it.metaPropertiesList.any {
-            it.values.any {
-                it.values.any {
-                    it.values.any {
-                        regex.matches(
-                            it.value as? String ?: ""
-                        )
-                    }
-                }
-            }
-        }
+        it.metaProperties.any { it.values.any { regex.matches(it.value.toString()) } }
     }
 
     override fun filterNot(tests: List<Test>): List<Test> = tests.filterNot {
-        it.metaPropertiesList.any {
-            it.values.any {
-                it.values.any {
-                    it.values.any {
-                        regex.matches(
-                            it.value as? String ?: ""
-                        )
-                    }
-                }
-            }
-        }
+        it.metaProperties.any { it.values.any { regex.matches(it.value.toString()) } }
     }
 
     override fun equals(other: Any?): Boolean {

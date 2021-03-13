@@ -1,52 +1,43 @@
 package com.malinskiy.marathon.execution
 
-import com.malinskiy.marathon.test.DataValues
 import com.malinskiy.marathon.test.MetaProperty
-import com.malinskiy.marathon.test.MetaPropertyList
 import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.Test
-import javax.lang.model.element.AnnotationValue
 import com.malinskiy.marathon.test.Test as MarathonTest
 
 class AnnotationValueListFilterTest {
 
-    private val annotation1 = MetaProperty("AnnotationOne", mapOf("Annotation" to "12345"))
-    private val annotation2 = MetaProperty("AnnotationOne", mapOf("Annotation" to "54321"))
-
-    //    private val annotation3 = MetaProperty("AnnotationOne", mapOf("Annotation" to "45123", "Annotation" to "12345"))
-    private val dataValues1 = DataValues(listOf(annotation1))
-    private val dataValues2 = DataValues(listOf(annotation2))
-
-    //    private val dataValues3 = DataValues(listOf(annotation1, annotation2))
-    private val annotation4 = MetaPropertyList("Annotations", listOf(dataValues1))
-    private val annotation5 = MetaPropertyList("Annotations", listOf(dataValues2))
-    private val annotation6 = MetaPropertyList("Annotations", listOf(dataValues1, dataValues2))
+    private val ann1 = MetaProperty("CaseId", mapOf("value" to listOf("123", "456", "789")))
+    private val ann2 = MetaProperty("CaseId", mapOf("value" to "123"))
+    private val ann3 = MetaProperty("CaseId", mapOf("value" to listOf("456", "789")))
+    private val ann4 = MetaProperty("TmsLink", mapOf("value" to listOf("456", "789", "123")))
 
     val test1 = stubTest("AnnotationOne", "AnnotationTwo")
     val test2 = stubTest("AnnotationTwo")
-    val test3 = stubTest(annotation4)
-    val test4 = stubTest(annotation5)
-    val test5 = stubTest(annotation6)
-    val valueListFilter = AnnotationValueListFilter(".*12345.*".toRegex())
-    val tests = listOf(test1, test2, test3, test4, test5)
+    val test3 = stubTest(ann1)
+    val test4 = stubTest(ann2)
+    val test5 = stubTest(ann3)
+    val test6 = stubTest(ann4)
+    val valueListFilter = AnnotationValueListFilter(".*123.*".toRegex())
+    val tests = listOf(test1, test2, test3, test4, test5, test6)
 
     private val union = CompositionFilter(
         listOf(
-            AnnotationFilter(".*".toRegex()),
-            AnnotationValueFilter(".*".toRegex()),
-            valueListFilter
+            AnnotationFilter(".*CaseId.*".toRegex()),
+//            AnnotationValueFilter(".*123.*".toRegex()),
+            AnnotationValueListFilter(".*123.*".toRegex())
         ),
         CompositionFilter.OPERATION.UNION
     )
 
     @Test
     fun shouldFilterUnion() {
-        union.filter(tests) shouldEqual listOf(test3)
+        union.filter(tests) shouldEqual listOf(test3, test4)
     }
 
     @Test
     fun shouldFilter() {
-        valueListFilter.filter(tests) shouldEqual listOf(test3, test5)
+        valueListFilter.filter(tests) shouldEqual listOf(test3, test4, test6)
     }
 
     @Test
@@ -55,8 +46,8 @@ class AnnotationValueListFilterTest {
     }
 }
 
-private fun stubTest(vararg annotations: MetaPropertyList) =
-    MarathonTest("com.sample", "SimpleTest", "fakeMethod", metaPropertiesList = listOf(*annotations))
+private fun stubTest(vararg annotations: MetaProperty) =
+    MarathonTest("com.sample", "SimpleTest", "fakeMethod", listOf(*annotations))
 
 private fun stubTest(vararg annotations: String) =
     MarathonTest("com.sample", "SimpleTest", "fakeMethod", annotations.map { MetaProperty(it) })

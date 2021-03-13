@@ -6,7 +6,7 @@ object Versions {
 
     val ddmlib = "27.1.2"
     val adam = "0.2.3"
-    val dexTestParser = "2.1.1"
+    val dexTestParser = "2.3.1"
     val kotlinLogging = "1.7.6"
     val slf4jAPI = "1.0.0"
     val logbackClassic = "1.2.3"
